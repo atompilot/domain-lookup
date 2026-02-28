@@ -13,16 +13,32 @@
 
 ## 安装
 
+### Homebrew（macOS / Linux，推荐）
+
+```bash
+brew tap atompilot/tap
+brew install domain-lookup
+```
+
+### Go
+
 ```bash
 go install github.com/atompilot/domain-lookup@latest
 ```
 
-或从源码编译：
+### 从源码编译
 
 ```bash
 git clone https://github.com/atompilot/domain-lookup.git
 cd domain-lookup
 go build -o domain-lookup .
+```
+
+### Windows（Scoop）
+
+```powershell
+scoop bucket add atompilot https://github.com/atompilot/scoop-bucket
+scoop install domain-lookup
 ```
 
 ## 使用
