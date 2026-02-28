@@ -1,0 +1,94 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - binary: domain-lookup
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-dev"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "Merge pull request"
+  groups:
+    - title: "新功能"
+      regexp: "^.*feat[\\(\\w]*[\\)]*:+.*$"
+      order: 0
+    - title: "Bug 修复"
+      regexp: "^.*fix[\\(\\w]*[\\)]*:+.*$"
+      order: 1
+    - title: "其他"
+      order: 999
+
+release:
+  github:
+    owner: atompilot
+    name: domain-lookup
+  name_template: "v{{ .Version }}"
+  prerelease: auto
+
+# Homebrew（macOS + Linux）
+brews:
+  - name: domain-lookup
+    repository:
+      owner: atompilot
+      name: homebrew-tap
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/atompilot/domain-lookup"
+    description: "Check if domains are registered using RDAP (with WHOIS fallback)"
+    license: "MIT"
+    test: |
+      system "#{bin}/domain-lookup", "--help"
+    install: |
+      bin.install "domain-lookup"
+
+# Scoop（Windows）
+scoops:
+  - name: domain-lookup
+    repository:
+      owner: atompilot
+      name: scoop-bucket
+      token: "{{ .Env.SCOOP_BUCKET_GITHUB_TOKEN }}"
+    directory: bucket
+    homepage: "https://github.com/atompilot/domain-lookup"
+    description: "Check if domains are registered using RDAP (with WHOIS fallback)"
+    license: "MIT"

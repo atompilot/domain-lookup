@@ -1,0 +1,19 @@
+# 编译产物
+domain-lookup
+dist/
+
+# Go
+*.test
+*.out
+coverage.txt
+
+# GoReleaser 本地构建
+dist/
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp
